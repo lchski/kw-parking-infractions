@@ -22,6 +22,7 @@ count_group <- function(dataset, ...) {
   dataset %>%
     group_by(...) %>%
     summarize(count = n()) %>%
+    mutate(prop = count / sum(count)) %>%
     arrange(-count)
 }
 
@@ -29,6 +30,7 @@ count_group_dates <- function(dataset, ...) {
   dataset %>%
     group_by(...) %>%
     summarize(count = n(), first = min(issuedate), last = max(issuedate)) %>%
+    mutate(prop = count / sum(count)) %>%
     arrange(-count)
 }
 

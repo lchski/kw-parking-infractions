@@ -10,24 +10,9 @@ kitchener <- read_csv("data/source/City_of_Kitchener_Parking_Infractions.csv") %
 
 waterloo <- read_csv("data/source/City_of_Waterloo_Bylaw_Parking_Infractions.csv") %>%
   clean_names() %>%
-  mutate(hour = hour(issuedate), minute = minute(issuedate), second = second(issuedate)) %>%
+  mutate(month = month(issuedate), hour = hour(issuedate), minute = minute(issuedate), second = second(issuedate)) %>%
   mutate(time = paste0(today(), " ", hour, ":", minute, ":", second)) %>%
   mutate(time = parse_date_time(time, "Y-m-d H:M:S"))
-
-waterloo %>%
-  filter(str_detect(street, "PINE")) %>%
-  group_by(street) %>%
-  summarize(count = n(), min = min(issuedate), max = max(issuedate))
-
-waterloo %>%
-  filter(str_detect(reason, regex("night|between|AM", ignore_case = TRUE))) %>%
-  filter(! str_detect(reason, "MARKED|PAY AND DISPLAY")) %>%
-  mutate(hour = hour(issuedate)) %>%
-  group_by(reason, hour) %>%
-  summarize(count = n()) %>%
-  mutate(prop = round(count / sum(count), 3)) %>%
-  arrange(reason, hour, count) %>%
-  View()
 
 waterloo %>%
   mutate(time = paste0(today(), " ", hour(issuedate), ":", minute(issuedate), ":", second(issuedate))) %>%
